@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bot Dashboard</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+body {
+  background-color: #D3F2C2;
+}
+
+.navbar {
+  background-color: #34A853;
+  color: white;
+  padding: 12px 30px;
+}
+
+.dashboard {
+  background-color: white;
+  margin: 2em auto;
+  padding: 2em;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  max-width: 600px;
+}
+
+.dashboard h2 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.dashboard .stat {
+  padding: 20px;
+  background-color: #edf4ed;
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+.dashboard .stat:last-child {
+  margin-bottom: 0;
+}
+
+button {
+  background-color: #34A853;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  margin: 10px 0;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 20px;
+}
+
+button:hover {
+  background-color: #2C7A4B;
+}
+
+/* Toggle Animation */
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes bounceOut {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+
+.toggle-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+}
+
+.toggle-button {
+  background-color: #34A853;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 20px;
+  animation: bounceIn 0.5s;
+}
+
+.toggle-button:hover {
+  background-color: #2C7A4B;
+}
+
+.toggle-menu {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: white;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: none;
+  animation: bounceIn 0.5s;
+}
+
+.toggle-menu.show {
+  display: block;
+  animation: bounceOut 0.5s;
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const socket = io();
+
+    fetch('/dashboard')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('bot-name').textContent = data.botName;
+        document.getElementById('fca').textContent = data.botFmd;
+
+        document.getElementById('ping').textContent = data.botPing;       
+        document.getElementById('repl').textContent = data.botRepl;
+
+        document.getElementById('lang').textContent = data.botLang;
+        document.getElementById('thread').textContent = data.botThreads;
+
+        document.getElementById('bot-uid').textContent = data.botUid;
+        document.getElementById('owner-name').textContent = data.owner;
+        document.getElementById('bot-prefix').textContent = data.prefix;
+        document.getElementById('commands-count').textContent = data.commandsCount;
+        document.getElementById('events-count').textContent = data.eventsCount;
+        document.getElementById('bot-uptime').textContent = new Date(data.uptime).toISOString().substr(11, 8);
+      })
+      .catch(error => console.error('Error fetching dashboard data:', error));
+
+    socket.on('real-time-data', data => {
+      document.getElementById('bot-uptime').textContent = new Date(data.uptime).toISOString().substr(11, 8);
+    });
+
+    // Toggle menu
+    const toggleButton = document.querySelector('.toggle-button');
+    const toggleMenu = document.querySelector('.toggle-menu');
+
+    toggleButton.addEventListener('click', () => {
+      toggleMenu.classList.toggle('show');
+    });
+  });
+</script>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container-fluid">
+    <span class="navbar-brand mb-0 h1">Bot Dashboard</span>
+  </div>
+</nav>
+<div class="toggle-container">
+  <button class="toggle-button">Toggle Menu</button>
+  <div class="toggle-menu">
+    <a href="profile.html" class="btn btn-primary">Profile</a>
+    <a href="credits.html" class="btn btn-primary">Credits</a>
+  </div>
+</div>
+<div class="container">
+  <div class="dashboard">
+    <div class="stat">
+      <h2>Bot Information</h2>
+      <p>Name: <span id="bot-name">Loading...</span></p>
+      <p>UID: <span id="bot-uid">Loading...</span></p>
+      <p>Owner: <span id="owner-name">Loading...</span></p>
+      <p>Prefix: <span id="bot-prefix">Loading...</span></p>
+      <p>FCA Module: <span id="fca">Loading....</span></p>
+    </div>
+    <div class="stat">
+      <h2>Statistics</h2>
+      <p>Commands Count: <span id="commands-count">Loading...</span></p>
+      <p>Events Count: <span id="events-count">Loading...</span></p>
+      <p>Language: <span id="lang">Loading....</span></p>
+      <p>Threads: <span id="thread">Loading....</span></p>
+    </div>
+    <div class="stat">
+      <h2>Status</h2>
+      <p>Uptime: <span id="bot-uptime">Loading...</span></p>
+      <p>REPL BOT: <span id="repl">Loading...</span></p>
+      <p>BotStart Milliseconds: <span id="ping">Loading...</span></p>
+    </div>
+    <button onclick="location.href='/harold'" class="btn btn-primary">Refresh</button>
+  </div>
+</div>
+</body>
+</html>
