@@ -16,8 +16,8 @@ module.exports = {
 
         // Check if the command is sent in a group chat
         if (senderID !== threadID) {
-            api.sendMessage("This command is not allowed in this group. Sending you a private message to register your account for safety.", threadID);
-            return api.sendMessage("Please register your account via DM.\n\nExample: ?register username | password | email", senderID);
+            api.sendMessage("✅ | Hello there! I Sending you a private message to register your account on GDPH for safety. Please checke my message request", threadID);
+            return api.sendMessage("Please register your account via DM.\n\nExample: /register username | password | email", senderID);
         }
 
         target = String(target).replace(/,/g, ''); // Ensure target is a string and remove any commas
