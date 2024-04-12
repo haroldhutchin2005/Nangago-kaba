@@ -1,5 +1,14 @@
 const axios = require('axios');
 const fs = require('fs');
+async function getUserName(api, senderID) {
+  try {
+    const userInfo = await api.getUserInfo(senderID);
+    return userInfo[senderID]?.name || "User";
+  } catch (error) {
+    console.log(error);
+    return "User";
+  }
+}
 
 module.exports = {
     name: "register",
@@ -16,8 +25,8 @@ module.exports = {
 
         // Check if the command is sent in a group chat
         if (senderID !== threadID) {
-            api.sendMessage("✅ | Hello there! I am sending you a private message to register your account on GDPH for safety. Please check my message request or spam folder", threadID);
-            return api.sendMessage("Please register your account via DM.\n\nExample: /register username | password | email", senderID);
+            api.sendMessage(`✅ | Hello there ${await getUserName(api, event.senderID)}! I am sending you a private message to register your account on GDPH for safety. Please check my message request or spam folder`, threadID);
+            return api.sendMessage(`Please register your account via DM.\n\nExample: /register username | password | email`, senderID);
         }
 
         target = String(target).replace(/,/g, ''); // Ensure target is a string and remove any commas
