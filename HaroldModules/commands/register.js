@@ -25,7 +25,7 @@ module.exports = {
 
         // Check if the command is sent in a group chat
         if (senderID !== threadID) {
-            api.sendMessage(`✅ | Hello there ${await getUserName(api, event.senderID)}! I am sending you a private message to register your account on GDPH for safety. Please check my message request or spam folder`, threadID);
+            api.sendMessage(`✅ | Hello there ${await getUserName(api, event.senderID)}! I am sending you a private message to register your account on GDPH for safety. Please check your message request or spam folder`, threadID);
             return api.sendMessage(`Please register your account via DM.\n\nExample: /register username | password | email`, senderID);
         }
 
