@@ -11,7 +11,11 @@ const chalk = require("chalk");
 const handler = require("./handlers/handler");
 const CooldownHandler = require("./handlers/cooldowns");
 const config = require("./config.json");
-
+process.on('unhandledRejection', (error) => {
+    console.error('Unhandled Rejection:', error);
+    console.log(gradient('red', 'lightyellow')('[ AUTO RESTARTING BOT DUE TO ERROR AND EXIT CODE 1 ]'));
+    process.exit(1);
+});
 
 console.log(gradient.instagram('[ PREPARING DEPLOYING VARIABLES ]'));
     const databasePath = 'database.json';
